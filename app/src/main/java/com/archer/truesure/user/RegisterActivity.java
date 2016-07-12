@@ -17,6 +17,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * 注册视图
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
@@ -34,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String et_password;
     private String et_confirm;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
     public void onContentChanged() {
         super.onContentChanged();
         ButterKnife.bind(this);
-
-
 
         etUsername.addTextChangedListener(mTextWatcher);
         etPassword.addTextChangedListener(mTextWatcher);

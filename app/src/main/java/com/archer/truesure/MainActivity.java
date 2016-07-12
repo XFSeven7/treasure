@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.archer.truesure.common.ActivityUtils;
-import com.archer.truesure.user.LoginActivity;
+import com.archer.truesure.user.login.LoginActivity;
 import com.archer.truesure.user.RegisterActivity;
 
 import butterknife.ButterKnife;

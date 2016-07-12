@@ -1,4 +1,4 @@
-package com.archer.truesure.user;
+package com.archer.truesure.user.login;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onContentChanged();
         ButterKnife.bind(this);
         Log.e(TAG, "onContentChanged: " );
+        //给ET添加监听
         etUsername.addTextChangedListener(textWatcher);
         etPassword.addTextChangedListener(textWatcher);
 
@@ -58,23 +59,20 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
         @Override
         public void afterTextChanged(Editable s) {
+
             Log.e(TAG, "afterTextChanged: " );
             et_password = etPassword.getText().toString();
             et_username = etUsername.getText().toString();
 
             boolean canLogin = TextUtils.isEmpty(et_username) || TextUtils.isEmpty(et_username);
             btnLogin.setEnabled(!canLogin);
+
         }
     };
 
@@ -92,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // TODO: 2016/7/11 0011 登录后的事情
+        new LoginPresenter(this);
 
     }
 
@@ -100,5 +99,25 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showMessage(String msg) {
+
+    }
+
+    @Override
+    public void nevigateToHome() {
+
     }
 }
