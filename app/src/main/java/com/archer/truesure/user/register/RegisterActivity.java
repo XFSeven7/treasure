@@ -1,7 +1,9 @@
 package com.archer.truesure.user.register;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.archer.truesure.HomeActivity;
+import com.archer.truesure.MainActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
@@ -125,6 +128,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
     @Override
     public void NavigationToHome() {
         activityUtils.startActivity(HomeActivity.class);
+        finish();
+        Intent intent = new Intent(MainActivity.ACTION_ENTER_HOME);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
@@ -152,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
 
         // TODO: 2016/7/11 0011 注册
         new RegisterPresenter(this).register();
+        activityUtils.hideSoftKeyboard();
 
     }
 

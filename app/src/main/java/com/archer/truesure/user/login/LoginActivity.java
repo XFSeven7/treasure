@@ -1,7 +1,9 @@
 package com.archer.truesure.user.login;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.archer.truesure.HomeActivity;
+import com.archer.truesure.MainActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
@@ -112,6 +115,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // TODO: 2016/7/11 0011 登录后的事情
         new LoginPresenter(this).login();
+        activityUtils.hideSoftKeyboard();
 
     }
 
@@ -143,5 +147,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     public void NavigationToHome() {
         activityUtils.startActivity(HomeActivity.class);
+        finish();
+        Intent intent = new Intent(MainActivity.ACTION_ENTER_HOME);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }
