@@ -1,5 +1,6 @@
 package com.archer.truesure.user.login;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.archer.truesure.HomeActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
@@ -90,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         }
 
         // TODO: 2016/7/11 0011 登录后的事情
-        new LoginPresenter(this);
+        new LoginPresenter(this).login();
 
     }
 
@@ -101,23 +103,26 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         ButterKnife.unbind(this);
     }
 
+    private ProgressDialog progressDialog;
     @Override
     public void showProgress() {
-
+        progressDialog = ProgressDialog.show(this, "", "正在登录，请稍等...");
     }
 
     @Override
     public void hideProgress() {
-
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
     public void showMessage(String msg) {
-
+        activityUtils.showToast(msg);
     }
 
     @Override
-    public void nevigateToHome() {
-
+    public void NavigationToHome() {
+        activityUtils.startActivity(HomeActivity.class);
     }
 }

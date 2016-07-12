@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.user.login.LoginActivity;
-import com.archer.truesure.user.RegisterActivity;
+import com.archer.truesure.user.register.RegisterActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

@@ -1,20 +1,19 @@
-package com.archer.truesure.user.login;
+package com.archer.truesure.user.register;
 
 import android.os.AsyncTask;
 
 /**
- * 具体的业务逻辑
  * Created by Administrator on 2016/7/12 0012.
  */
-public class LoginPresenter {
+public class RegisterPresenter {
 
-    private LoginView loginView;
+    private RegisterView registerView;
 
-    public LoginPresenter(LoginView loginView) {
-        this.loginView = loginView;
+    public RegisterPresenter(RegisterView registerView) {
+        this.registerView = registerView;
     }
-
-    public void login() {
+    
+    public void register() {
 
         new MyAsyncTask().execute();
 
@@ -25,7 +24,7 @@ public class LoginPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loginView.showProgress();
+            registerView.showProgress();
         }
 
         @Override
@@ -44,15 +43,15 @@ public class LoginPresenter {
             super.onPostExecute(integer);
 
             if (integer == 0) {
-                loginView.hideProgress();
-                loginView.showMessage("网络错误");
+                registerView.hideProgress();
+                registerView.showMessage("网络错误");
                 return;
             }
 
-            loginView.hideProgress();
-            loginView.NavigationToHome();
+            registerView.hideProgress();
+            registerView.NavigationToHome();
 
         }
     }
-
+    
 }

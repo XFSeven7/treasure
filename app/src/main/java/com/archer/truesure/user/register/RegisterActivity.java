@@ -1,5 +1,6 @@
-package com.archer.truesure.user;
+package com.archer.truesure.user.register;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.archer.truesure.HomeActivity;
 import com.archer.truesure.R;
+import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
 
 import butterknife.Bind;
@@ -20,7 +23,7 @@ import butterknife.OnClick;
 /**
  * 注册视图
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements RegisterView{
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -37,9 +40,12 @@ public class RegisterActivity extends AppCompatActivity {
     private String et_password;
     private String et_confirm;
 
+    private ActivityUtils activityUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityUtils = new ActivityUtils(this);
         setContentView(R.layout.activity_register);
     }
 
@@ -80,6 +86,33 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
 
+    private ProgressDialog progressDialog;
+    @Override
+    public void showProgress() {
+        progressDialog = ProgressDialog.show(this, "", "正在注册，请稍等...");
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        activityUtils.showToast(msg);
+    }
+
+    @Override
+    public void NavigationToHome() {
+        activityUtils.startActivity(HomeActivity.class);
+    }
+
+    @Override
+    public void addRegister() {
+
+    }
 
     @OnClick(R.id.btn_Register)
     public void register() {
@@ -96,9 +129,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (!et_password.equals(et_confirm)) {
             Toast.makeText(RegisterActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         // TODO: 2016/7/11 0011 注册
+        new RegisterPresenter(this).register();
 
     }
 

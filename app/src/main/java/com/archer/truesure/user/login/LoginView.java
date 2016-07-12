@@ -25,6 +25,8 @@ public interface LoginView {
     /**
      * 跳转到主页
      */
-    void nevigateToHome();
+    void NavigationToHome();
+
+
 
 }
