@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,10 +54,28 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         super.onContentChanged();
         ButterKnife.bind(this);
         Log.e(TAG, "onContentChanged: " );
+
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getTitle());
+        }
+
         //给ET添加监听
         etUsername.addTextChangedListener(textWatcher);
         etPassword.addTextChangedListener(textWatcher);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

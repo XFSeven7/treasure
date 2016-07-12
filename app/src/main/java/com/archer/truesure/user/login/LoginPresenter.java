@@ -14,10 +14,11 @@ public class LoginPresenter {
         this.loginView = loginView;
     }
 
+    /**
+     * 模拟登录
+     */
     public void login() {
-
         new MyAsyncTask().execute();
-
     }
 
     private final class MyAsyncTask extends AsyncTask<Void, Void, Integer> {

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -54,10 +55,27 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
         super.onContentChanged();
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getTitle());
+        }
+
         etUsername.addTextChangedListener(mTextWatcher);
         etPassword.addTextChangedListener(mTextWatcher);
         etConfirm.addTextChangedListener(mTextWatcher);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private TextWatcher mTextWatcher = new TextWatcher() {

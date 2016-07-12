@@ -3,6 +3,7 @@ package com.archer.truesure.user.register;
 import android.os.AsyncTask;
 
 /**
+ * 注册界面的业务逻辑
  * Created by Administrator on 2016/7/12 0012.
  */
 public class RegisterPresenter {
@@ -12,11 +13,12 @@ public class RegisterPresenter {
     public RegisterPresenter(RegisterView registerView) {
         this.registerView = registerView;
     }
-    
+
+    /**
+     * 模拟注册
+     */
     public void register() {
-
         new MyAsyncTask().execute();
-
     }
 
     private final class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
