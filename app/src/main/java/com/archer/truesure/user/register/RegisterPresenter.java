@@ -2,7 +2,20 @@ package com.archer.truesure.user.register;
 
 import android.os.AsyncTask;
 
+import com.archer.truesure.net.NetOkHttpClient;
+import com.archer.truesure.user.entity.RegisterInfo;
+import com.archer.truesure.user.entity.RegisterResultInfo;
+import com.google.gson.Gson;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 注册界面的业务逻辑
@@ -10,47 +23,100 @@ import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
  */
 public class RegisterPresenter extends MvpNullObjectBasePresenter<RegisterView> {
 
+    private NetOkHttpClient netOkHttpClient;
+
+    private Gson gson;
+
+    private RegisterInfo registerInfo;
+
     /**
      * 模拟注册
      */
-    public void register() {
+    public void register(RegisterInfo registerInfo) {
+        this.registerInfo = registerInfo;
+        netOkHttpClient = NetOkHttpClient.getInstance();
+        gson = new Gson();
         new MyAsyncTask().execute();
     }
 
-    private final class MyAsyncTask extends AsyncTask<Void, Void, Integer> {
+    private final class MyAsyncTask extends AsyncTask<Void, Void, RegisterResultInfo> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            getView().showProgress();
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected RegisterResultInfo doInBackground(Void... params) {
 
+            OkHttpClient okHttpClient = netOkHttpClient.getOkHttpClient();
+
+            String content = gson.toJson(registerInfo);
+
+            MediaType type = MediaType.parse("truesure");
+            RequestBody body = RequestBody.create(type, content);
+
+            Request request = new Request.Builder()
+                    .post(body)
+                    .url(NetOkHttpClient.APP_URL + "/Handler/UserHandler.ashx?action=register")
+                    .build();
+
+            Call call = okHttpClient.newCall(request);
+
+            Response execute;
+            String json;
             try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                return 0;
+                execute = call.execute();
+                json = execute.body().string();
+            } catch (IOException e) {
+                return null;
             }
-            return 1;
 
+            RegisterResultInfo registerResultInfo = gson.fromJson(json, RegisterResultInfo.class);
+
+            if (registerResultInfo != null) {
+                return registerResultInfo;
+            }
+
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
+        protected void onPostExecute(RegisterResultInfo registerResultInfo) {
+            super.onPostExecute(registerResultInfo);
 
-            if (integer == 0) {
-                getView().hideProgress();
-                getView().showMessage("网络错误");
+            getView().hideProgress();
+
+            if (registerResultInfo == null) {
+                getView().showMessage("未知错误");
                 return;
             }
 
-            getView().hideProgress();
-            getView().NavigationToHome();
+            /*
+
+                "errcode": 1,                  //状态值
+                "errmsg": "登录成功！",        //返回信息
+                "tokenid": 171                 //用户令牌
+
+                "errcode":2,
+                "errmsg":"注册此用户名已存在！"
+
+            */
+
+            switch (registerResultInfo.getCode()) {
+
+                case 1:
+                    getView().showMessage(registerResultInfo.getMsg());
+                    getView().NavigationToHome();
+                    break;
+                case 2:
+                    getView().showMessage(registerResultInfo.getMsg());
+                    break;
+
+            }
 
         }
+
     }
-    
+
 }

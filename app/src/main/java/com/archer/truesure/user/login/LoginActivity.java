@@ -21,6 +21,7 @@ import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
 import com.archer.truesure.components.AlertDialogFragment;
+import com.archer.truesure.user.entity.UserInfo;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import butterknife.Bind;
@@ -125,7 +126,7 @@ public class LoginActivity extends MvpActivity<LoginView, LoginPresenter> implem
         }
 
         // TODO: 2016/7/11 0011 登录后的事情
-        getPresenter().login();
+        getPresenter().login(new UserInfo(et_username, et_password));
         activityUtils.hideSoftKeyboard();
 
     }
