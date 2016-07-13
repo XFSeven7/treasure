@@ -1,10 +1,12 @@
 package com.archer.truesure.user.login;
 
+import com.hannesdorfmann.mosby.mvp.MvpView;
+
 /**
  * 视图需要做的事情
  * Created by Administrator on 2016/7/12 0012.
  */
-public interface LoginView {
+public interface LoginView extends MvpView{
 
     /**
      * 显示加载中

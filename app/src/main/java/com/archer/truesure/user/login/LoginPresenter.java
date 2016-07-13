@@ -2,17 +2,13 @@ package com.archer.truesure.user.login;
 
 import android.os.AsyncTask;
 
+import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
+
 /**
  * 具体的业务逻辑
  * Created by Administrator on 2016/7/12 0012.
  */
-public class LoginPresenter {
-
-    private LoginView loginView;
-
-    public LoginPresenter(LoginView loginView) {
-        this.loginView = loginView;
-    }
+public class LoginPresenter extends MvpNullObjectBasePresenter<LoginView> {
 
     /**
      * 模拟登录
@@ -26,7 +22,7 @@ public class LoginPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            loginView.showProgress();
+            getView().showProgress();
         }
 
         @Override
@@ -45,13 +41,13 @@ public class LoginPresenter {
             super.onPostExecute(integer);
 
             if (integer == 0) {
-                loginView.hideProgress();
-                loginView.showMessage("网络错误");
+                getView().hideProgress();
+                getView().showMessage("网络错误");
                 return;
             }
 
-            loginView.hideProgress();
-            loginView.NavigationToHome();
+            getView().hideProgress();
+            getView().NavigationToHome();
 
         }
     }

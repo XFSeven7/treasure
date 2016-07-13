@@ -2,17 +2,13 @@ package com.archer.truesure.user.register;
 
 import android.os.AsyncTask;
 
+import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
+
 /**
  * 注册界面的业务逻辑
  * Created by Administrator on 2016/7/12 0012.
  */
-public class RegisterPresenter {
-
-    private RegisterView registerView;
-
-    public RegisterPresenter(RegisterView registerView) {
-        this.registerView = registerView;
-    }
+public class RegisterPresenter extends MvpNullObjectBasePresenter<RegisterView> {
 
     /**
      * 模拟注册
@@ -26,7 +22,7 @@ public class RegisterPresenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            registerView.showProgress();
+            getView().showProgress();
         }
 
         @Override
@@ -46,13 +42,13 @@ public class RegisterPresenter {
             super.onPostExecute(integer);
 
             if (integer == 0) {
-                registerView.hideProgress();
-                registerView.showMessage("网络错误");
+                getView().hideProgress();
+                getView().showMessage("网络错误");
                 return;
             }
 
-            registerView.hideProgress();
-            registerView.NavigationToHome();
+            getView().hideProgress();
+            getView().NavigationToHome();
 
         }
     }

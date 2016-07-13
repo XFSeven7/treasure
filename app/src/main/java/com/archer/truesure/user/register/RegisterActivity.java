@@ -3,8 +3,8 @@ package com.archer.truesure.user.register;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,6 +19,8 @@ import com.archer.truesure.MainActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
+import com.archer.truesure.components.AlertDialogFragment;
+import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +29,7 @@ import butterknife.OnClick;
 /**
  * 注册视图
  */
-public class RegisterActivity extends AppCompatActivity implements RegisterView{
+public class RegisterActivity extends MvpActivity<RegisterView, RegisterPresenter> implements RegisterView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -71,6 +73,12 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
 
     }
 
+    @NonNull
+    @Override
+    public RegisterPresenter createPresenter() {
+        return new RegisterPresenter();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -107,7 +115,57 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
         }
     };
 
+
+
+    @OnClick(R.id.btn_Register)
+    public void register() {
+
+        if (RegexUtils.verifyUsername(et_username) != RegexUtils.VERIFY_SUCCESS) {
+            showUsernameError();
+            return;
+        }
+
+        if (RegexUtils.verifyPassword(et_password) != RegexUtils.VERIFY_SUCCESS) {
+            showPasswordError();
+            return;
+        }
+
+        if (!et_password.equals(et_confirm)) {
+            Toast.makeText(RegisterActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+            etPassword.setText("");
+            etConfirm.setText("");
+            return;
+        }
+
+        // TODO: 2016/7/11 0011 注册
+        getPresenter().register();
+        activityUtils.hideSoftKeyboard();
+
+    }
+
+    private void showUsernameError() {
+        AlertDialogFragment fragment = AlertDialogFragment.newsIntance(R.string.username_error, R.string.username_rules);
+        fragment.show(getSupportFragmentManager(), "showUsernameError");
+        etUsername.setText("");
+    }
+
+    private void showPasswordError() {
+        AlertDialogFragment fragment = AlertDialogFragment.newsIntance(R.string.password_error, R.string.password_rules);
+        fragment.show(getSupportFragmentManager(), "showPasswordError");
+        etPassword.setText("");
+        etConfirm.setText("");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    //********************************RegisterView接口所实现的方法***********************************
+
     private ProgressDialog progressDialog;
+
     @Override
     public void showProgress() {
         progressDialog = ProgressDialog.show(this, "", "正在注册，请稍等...");
@@ -138,33 +196,4 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView{
 
     }
 
-    @OnClick(R.id.btn_Register)
-    public void register() {
-
-        if (RegexUtils.verifyUsername(et_username) != RegexUtils.VERIFY_SUCCESS) {
-            Toast.makeText(RegisterActivity.this, R.string.username_rules, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (RegexUtils.verifyPassword(et_password) != RegexUtils.VERIFY_SUCCESS) {
-            Toast.makeText(RegisterActivity.this, R.string.password_rules, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (!et_password.equals(et_confirm)) {
-            Toast.makeText(RegisterActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // TODO: 2016/7/11 0011 注册
-        new RegisterPresenter(this).register();
-        activityUtils.hideSoftKeyboard();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
 }

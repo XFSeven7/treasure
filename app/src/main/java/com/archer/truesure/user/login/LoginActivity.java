@@ -3,8 +3,8 @@ package com.archer.truesure.user.login;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,19 +14,20 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.archer.truesure.HomeActivity;
 import com.archer.truesure.MainActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
+import com.archer.truesure.components.AlertDialogFragment;
+import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements LoginView {
+public class LoginActivity extends MvpActivity<LoginView, LoginPresenter> implements LoginView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -52,11 +53,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     }
 
     private static final String TAG = "LoginActivity";
+
     @Override
     public void onContentChanged() {
         super.onContentChanged();
         ButterKnife.bind(this);
-        Log.e(TAG, "onContentChanged: " );
+        Log.e(TAG, "onContentChanged: ");
 
         setSupportActionBar(toolbar);
 
@@ -71,6 +73,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     }
 
+    @NonNull
+    @Override
+    public LoginPresenter createPresenter() {
+        return new LoginPresenter();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -83,14 +91,17 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
 
-            Log.e(TAG, "afterTextChanged: " );
+            Log.e(TAG, "afterTextChanged: ");
             et_password = etPassword.getText().toString();
             et_username = etUsername.getText().toString();
 
@@ -101,24 +112,36 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     };
 
     @OnClick(R.id.btn_Login)
-    public void login(){
+    public void login() {
 
         if (RegexUtils.verifyUsername(et_username) != RegexUtils.VERIFY_SUCCESS) {
-            Toast.makeText(LoginActivity.this, R.string.username_rules, Toast.LENGTH_SHORT).show();
+            showUsernameError();
             return;
         }
 
         if (RegexUtils.verifyPassword(et_password) != RegexUtils.VERIFY_SUCCESS) {
-            Toast.makeText(LoginActivity.this, R.string.password_rules, Toast.LENGTH_SHORT).show();
+            showPasswordError();
             return;
         }
 
         // TODO: 2016/7/11 0011 登录后的事情
-        new LoginPresenter(this).login();
+        getPresenter().login();
         activityUtils.hideSoftKeyboard();
 
     }
 
+    private void showUsernameError() {
+        AlertDialogFragment fragment = AlertDialogFragment.newsIntance(R.string.username_error, R.string.username_rules);
+        fragment.show(getSupportFragmentManager(), "showUsernameError");
+        etUsername.setText("");
+
+    }
+
+    private void showPasswordError() {
+        AlertDialogFragment fragment = AlertDialogFragment.newsIntance(R.string.password_error, R.string.password_rules);
+        fragment.show(getSupportFragmentManager(), "showPasswordError");
+        etPassword.setText("");
+    }
 
     @Override
     protected void onDestroy() {
@@ -126,7 +149,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         ButterKnife.unbind(this);
     }
 
+    //********************************LoginView接口所实现的方法**************************************
+
     private ProgressDialog progressDialog;
+
     @Override
     public void showProgress() {
         progressDialog = ProgressDialog.show(this, "", "正在登录，请稍等...");
@@ -151,4 +177,5 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         Intent intent = new Intent(MainActivity.ACTION_ENTER_HOME);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
+
 }

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btn_Login:
                 activityUtils.startActivity(LoginActivity.class);
                 break;
+
         }
 
     }
