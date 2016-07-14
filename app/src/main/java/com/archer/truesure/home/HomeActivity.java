@@ -1,4 +1,4 @@
-package com.archer.truesure;
+package com.archer.truesure.home;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -8,7 +8,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
+import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 
 import butterknife.Bind;
@@ -24,12 +27,16 @@ public class HomeActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
 
     private ActivityUtils activityUtils;
+    private ImageView icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityUtils = new ActivityUtils(this);
         setContentView(R.layout.activity_home);
+
+
+
     }
 
     @Override
@@ -47,6 +54,15 @@ public class HomeActivity extends AppCompatActivity {
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        icon = (ImageView) navView.getHeaderView(0).findViewById(R.id.iv_userIcon);
+        icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activityUtils.startActivity(AccountActivity.class);
+            }
+        });
+
 
     }
 

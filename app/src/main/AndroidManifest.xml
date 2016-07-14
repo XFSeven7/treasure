@@ -3,6 +3,7 @@
     package="com.archer.truesure">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -19,7 +20,8 @@
         </activity>
         <activity android:name=".user.login.LoginActivity" />
         <activity android:name=".user.register.RegisterActivity" />
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".home.HomeActivity" />
+        <activity android:name=".home.AccountActivity"></activity>
     </application>
 
 </manifest>

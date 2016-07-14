@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.archer.truesure.HomeActivity;
+import com.archer.truesure.home.HomeActivity;
 import com.archer.truesure.MainActivity;
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
