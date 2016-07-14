@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
+ * 网络连接
+ * 包含okHttp和retrofit
  * Created by Administrator on 2016/7/13 0013.
  */
 public class NetOkHttpClient {
@@ -16,8 +18,6 @@ public class NetOkHttpClient {
     public static final String APP_URL = "http://admin.syfeicuiedu.com";
 
     private OkHttpClient okHttpClient;
-
-    private Gson gson;
 
     private static NetOkHttpClient netOkHttpClient;
 
@@ -27,9 +27,8 @@ public class NetOkHttpClient {
 
     private NetOkHttpClient() {
 
-//        gson = new Gson();
         //非严格模式
-        gson = new GsonBuilder().setLenient().create();
+        Gson gson = new GsonBuilder().setLenient().create();
 
         okHttpClient = new OkHttpClient();
         retrofit = new Retrofit.Builder()
@@ -57,7 +56,7 @@ public class NetOkHttpClient {
 
     public UserApi getUserApi() {
         if (userApi == null) {
-            UserApi userApi = retrofit.create(UserApi.class);
+            userApi = retrofit.create(UserApi.class);
         }
         return userApi;
     }

@@ -138,7 +138,6 @@ public class RegisterActivity extends MvpActivity<RegisterView, RegisterPresente
             return;
         }
 
-        // TODO: 2016/7/11 0011 注册
         getPresenter().register(new RegisterInfo(et_username, et_password));
         activityUtils.hideSoftKeyboard();
 
