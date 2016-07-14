@@ -1,22 +1,15 @@
 package com.archer.truesure.user.register;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.archer.truesure.net.NetOkHttpClient;
+import com.archer.truesure.user.UserApi;
 import com.archer.truesure.user.entity.RegisterInfo;
 import com.archer.truesure.user.entity.RegisterResultInfo;
-import com.google.gson.Gson;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * 注册界面的业务逻辑
@@ -24,6 +17,7 @@ import okhttp3.Response;
  */
 public class RegisterPresenter extends MvpNullObjectBasePresenter<RegisterView> {
 
+    //******************************使用异步实现注册*************************************************
 
 //    private NetOkHttpClient netOkHttpClient;
 //
@@ -122,82 +116,137 @@ public class RegisterPresenter extends MvpNullObjectBasePresenter<RegisterView> 
 //
 //    }
 
-    private Gson gson;
+    //************************使用handler实现注册****************************************************
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+//    private Gson gson;
+//
+//    private Handler mHandler = new Handler(Looper.getMainLooper());
+//
+//    private NetOkHttpClient netOkHttpClient;
+//
+//    public void register(RegisterInfo info) {
+//
+//        gson = new Gson();
+//
+//        netOkHttpClient = NetOkHttpClient.getInstance();
+//
+//        OkHttpClient okHttpClient = netOkHttpClient.getOkHttpClient();
+//
+//        String s = gson.toJson(info);
+//
+//        RequestBody body = RequestBody.create(null, s);
+//
+//        final Request request = new Request.Builder()
+//                .url(NetOkHttpClient.APP_URL + "/Handler/UserHandler.ashx?action=register")
+//                .post(body)
+//                .build();
+//
+//
+//        Call call = okHttpClient.newCall(request);
+//
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                failure(e.getMessage());
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//
+//                RegisterResultInfo registerResultInfo;
+//                if (response.isSuccessful()) {
+//                    String string = response.body().string();
+//                    registerResultInfo = gson.fromJson(string, RegisterResultInfo.class);
+//                    if (registerResultInfo.getCode() == 1) {
+//                        success(registerResultInfo.getMsg());
+//                        return;
+//                    }
+//                    failure(registerResultInfo.getMsg());
+//                    return;
+//                }
+//                failure("未知错误");
+//
+//            }
+//        });
+//
+//    }
+//
+//    private void success(final String msg) {
+//
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                getView().hideProgress();
+//                getView().showMessage(msg);
+//                getView().NavigationToHome();
+//            }
+//        });
+//
+//    }
+//
+//    private void failure(final String msg) {
+//
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                getView().hideProgress();
+//                getView().showMessage(msg);
+//            }
+//        });
+//
+//    }
 
-    private NetOkHttpClient netOkHttpClient;
+    //*********************************使用retrofit实现注册******************************************
+
+
+    private Call<RegisterResultInfo> registerCall;
 
     public void register(RegisterInfo info) {
 
-        gson = new Gson();
+        Retrofit retrofit = NetOkHttpClient.getInstance().getRetrofit();
 
-        netOkHttpClient = NetOkHttpClient.getInstance();
+        UserApi userApi = retrofit.create(UserApi.class);
+        registerCall = userApi.register(info);
 
-        OkHttpClient okHttpClient = netOkHttpClient.getOkHttpClient();
+        registerCall.enqueue(callback);
 
-        String s = gson.toJson(info);
+    }
 
-        RequestBody body = RequestBody.create(null, s);
+    private Callback<RegisterResultInfo> callback = new Callback<RegisterResultInfo>() {
+        @Override
+        public void onResponse(Call<RegisterResultInfo> call, Response<RegisterResultInfo> response) {
 
-        final Request request = new Request.Builder()
-                .url(NetOkHttpClient.APP_URL + "/Handler/UserHandler.ashx?action=register")
-                .post(body)
-                .build();
+            getView().hideProgress();
 
+            if (response.isSuccessful()) {
 
-        Call call = okHttpClient.newCall(request);
+                RegisterResultInfo body = response.body();
 
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                failure(e.getMessage());
-            }
+                getView().showMessage(body.getMsg());
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                RegisterResultInfo registerResultInfo;
-                if (response.isSuccessful()) {
-                    String string = response.body().string();
-                    registerResultInfo = gson.fromJson(string, RegisterResultInfo.class);
-                    if (registerResultInfo.getCode() == 1) {
-                        success(registerResultInfo.getMsg());
-                        return;
-                    }
-                    failure(registerResultInfo.getMsg());
-                    return;
+                if (body.getCode() == 1) {
+                    getView().NavigationToHome();
                 }
-                failure("未知错误");
-
+                return;
             }
-        });
+
+            getView().showMessage("未知错误");
+
+        }
+
+        @Override
+        public void onFailure(Call<RegisterResultInfo> call, Throwable t) {
+            getView().showMessage(t.getMessage());
+        }
+    };
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+
+        if (registerCall != null) {
+            registerCall.cancel();
+        }
 
     }
-
-    private void success(final String msg) {
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                getView().hideProgress();
-                getView().showMessage(msg);
-                getView().NavigationToHome();
-            }
-        });
-
-    }
-
-    private void failure(final String msg) {
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                getView().hideProgress();
-                getView().showMessage(msg);
-            }
-        });
-
-    }
-
 }
