@@ -1,30 +1,31 @@
-package com.archer.truesure.user.entity;
+package com.archer.truesure.user.register;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Administrator on 2016/7/13 0013.
  */
-public class UserInfo {
+public class RegisterInfo {
 
-//        "UserName":"qjd",
-//        "Password":"654321"
+//    "Password":"654321"
+//    "UserName":"qjd"
 
-    @SerializedName("UserName")
-    private String userName;
     @SerializedName("Password")
     private String passWord;
 
-    public UserInfo(String userName, String passWord) {
+    @SerializedName("UserName")
+    private String userName;
+
+    public RegisterInfo(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public String getPassWord() {
         return passWord;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

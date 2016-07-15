@@ -13,6 +13,9 @@ import android.widget.ImageView;
 
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
+import com.archer.truesure.user.UserPres;
+import com.archer.truesure.user.account.AccountActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,6 +40,12 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ImageLoader.getInstance().displayImage(UserPres.getString(UserPres.HEAD_PIC_URL),icon);
     }
 
     @Override

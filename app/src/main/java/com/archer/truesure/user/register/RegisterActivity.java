@@ -20,7 +20,6 @@ import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.common.RegexUtils;
 import com.archer.truesure.components.AlertDialogFragment;
-import com.archer.truesure.user.entity.RegisterInfo;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import butterknife.Bind;

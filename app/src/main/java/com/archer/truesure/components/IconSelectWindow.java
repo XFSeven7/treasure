@@ -21,9 +21,9 @@ public class IconSelectWindow extends PopupWindow {
     private Activity activity;
 
     public interface Listener {
-        void openCanmera();
+        void openCamera();
 
-        void openGallay();
+        void openGallery();
     }
 
     private Listener listener;
@@ -49,10 +49,10 @@ public class IconSelectWindow extends PopupWindow {
 
         switch (v.getId()) {
             case R.id.btn_gallery:
-                listener.openGallay();
+                listener.openGallery();
                 break;
             case R.id.btn_camera:
-                listener.openCanmera();
+                listener.openCamera();
                 break;
         }
 

@@ -1,7 +1,7 @@
 package com.archer.truesure;
 
 import com.archer.truesure.net.NetOkHttpClient;
-import com.archer.truesure.user.entity.RegisterInfo;
+import com.archer.truesure.user.register.RegisterInfo;
 import com.google.gson.Gson;
 
 import org.junit.Test;
@@ -58,6 +58,16 @@ public class ExampleUnitTest {
         }
 
         assertEquals("", string);
+
+    }
+
+    @Test
+    public void testSubstring() {
+        String url = "/UpLoad/HeadPic/f683f88dc9d14b648ad5fcba6c6bc840_0_1.png";
+
+        String sub = url.substring(url.lastIndexOf("/") + 1, url.length());
+
+        assertEquals("f683f88dc9d14b648ad5fcba6c6bc840_0_1.png", sub);
 
     }
 
