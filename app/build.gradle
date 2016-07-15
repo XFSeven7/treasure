@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.archer.truesure"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -33,4 +33,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'org.hybridsquad.android.photocropper:library:2.1.0'
 }

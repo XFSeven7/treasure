@@ -124,6 +124,7 @@ public class LoginPresenter extends MvpNullObjectBasePresenter<LoginView> {
 
     public void login(UserInfo userInfo) {
 
+        getView().showProgress();
         UserApi userApi = NetOkHttpClient.getInstance().getUserApi();
         loginCall = userApi.login(userInfo);
         loginCall.enqueue(callback);

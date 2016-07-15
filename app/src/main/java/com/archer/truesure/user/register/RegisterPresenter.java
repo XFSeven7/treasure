@@ -203,6 +203,8 @@ public class RegisterPresenter extends MvpNullObjectBasePresenter<RegisterView> 
 
     public void register(RegisterInfo info) {
 
+        getView().showProgress();
+
         Retrofit retrofit = NetOkHttpClient.getInstance().getRetrofit();
 
         UserApi userApi = retrofit.create(UserApi.class);

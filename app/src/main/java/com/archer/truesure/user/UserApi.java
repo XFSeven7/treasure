@@ -10,6 +10,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 /**
+ *
  * Created by Administrator on 2016/7/14 0014.
  */
 public interface UserApi {
