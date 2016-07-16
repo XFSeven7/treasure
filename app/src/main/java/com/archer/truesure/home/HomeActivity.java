@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -39,13 +40,17 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
 
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        ImageLoader.getInstance().displayImage(UserPres.getString(UserPres.HEAD_PIC_URL),icon);
+
+        String url = UserPres.getString(UserPres.HEAD_PIC_URL);
+        if (url != null) {
+            ImageLoader.getInstance().displayImage(UserPres.getString(UserPres.HEAD_PIC_URL), icon);
+        }
+
     }
 
     @Override

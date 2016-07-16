@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.archer.truesure.common.ActivityUtils;
+import com.archer.truesure.user.UserPres;
 import com.archer.truesure.user.login.LoginActivity;
 import com.archer.truesure.user.register.RegisterActivity;
 

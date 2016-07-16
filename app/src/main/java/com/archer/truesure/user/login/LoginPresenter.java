@@ -50,6 +50,8 @@ public class LoginPresenter extends MvpNullObjectBasePresenter<LoginView> {
                 if (resultInfo.getCode() == 1) {
                     getView().NavigationToHome();
                     UserPres.saveInt(UserPres.TOKEN_ID, resultInfo.getTokenId());
+                    String head_url = NetOkHttpClient.APP_URL + resultInfo.getHeadPic();
+                    UserPres.saveString(UserPres.HEAD_PIC_URL, head_url);
                     return;
                 }
 
