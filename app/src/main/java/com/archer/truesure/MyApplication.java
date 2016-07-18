@@ -3,6 +3,7 @@ package com.archer.truesure;
 import android.app.Application;
 
 import com.archer.truesure.user.UserPres;
+import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -17,6 +18,8 @@ public class MyApplication extends Application{
         super.onCreate();
         UserPres.init(this);
         initImageLoader();
+        SDKInitializer.initialize(getApplicationContext());
+
     }
 
     private void initImageLoader() {
