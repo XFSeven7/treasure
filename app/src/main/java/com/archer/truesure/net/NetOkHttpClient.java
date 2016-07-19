@@ -1,5 +1,6 @@
 package com.archer.truesure.net;
 
+import com.archer.truesure.treasure.TreasureApi;
 import com.archer.truesure.user.UserApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +25,7 @@ public class NetOkHttpClient {
     private Retrofit retrofit;
 
     private UserApi userApi;
+    private TreasureApi treasureApi;
 
     private NetOkHttpClient() {
 
@@ -59,6 +61,15 @@ public class NetOkHttpClient {
             userApi = retrofit.create(UserApi.class);
         }
         return userApi;
+    }
+
+    public TreasureApi getTreasureApi() {
+
+        if (treasureApi == null) {
+            treasureApi = retrofit.create(TreasureApi.class);
+        }
+
+        return treasureApi;
     }
 
     public OkHttpClient getOkHttpClient() {

@@ -48,6 +48,7 @@
             android:layout_height="@dimen/dp_200">
             <!--地图缩放-->
             <LinearLayout
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/ll_locationBar"

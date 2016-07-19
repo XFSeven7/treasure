@@ -1,4 +1,4 @@
-package com.archer.truesure.home;
+package com.archer.truesure.treasure.home;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;

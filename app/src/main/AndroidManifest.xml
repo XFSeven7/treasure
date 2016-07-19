@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -34,7 +37,7 @@
         </activity>
         <activity android:name=".user.login.LoginActivity" />
         <activity android:name=".user.register.RegisterActivity" />
-        <activity android:name=".home.HomeActivity" />
+        <activity android:name=".treasure.home.HomeActivity" />
         <activity android:name=".user.account.AccountActivity" />
         <activity android:name=".temp.TempActivity">
         </activity>

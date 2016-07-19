@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.HomeActivity">
+    tools:context=".treasure.home.HomeActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/fragment_map"
-        android:name="com.archer.truesure.home.map.MapFragment"
+        android:name="com.archer.truesure.treasure.map.Map1Fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize" />
