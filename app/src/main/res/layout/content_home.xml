@@ -24,6 +24,7 @@
     </android.support.v7.widget.Toolbar>
 
     <fragment
+        android:id="@+id/fragment_map"
         android:name="com.archer.truesure.home.map.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
