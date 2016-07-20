@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.archer.truesure.R;
 import com.archer.truesure.treasure.Treasure;
-import com.baidu.mapapi.model.LatLng;
 
 import java.text.DecimalFormat;
 

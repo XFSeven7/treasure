@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -29,9 +28,11 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="ooK3g2g0n4UUPKRPAw7LH9C3uhuUO7WX" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,13 +40,14 @@
         <activity android:name=".user.register.RegisterActivity" />
         <activity android:name=".treasure.home.HomeActivity" />
         <activity android:name=".user.account.AccountActivity" />
-        <activity android:name=".temp.TempActivity">
-        </activity>
+        <activity android:name=".temp.TempActivity"></activity>
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
+
+        <activity android:name=".treasure.hide.HideActivity"></activity>
     </application>
 
 </manifest>
