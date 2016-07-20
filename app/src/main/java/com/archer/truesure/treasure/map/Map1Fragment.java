@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
@@ -31,6 +33,14 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.List;
@@ -45,18 +55,28 @@ import butterknife.OnClick;
  */
 public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implements MapMvpView {
 
+    private static final String TAG = "Map1Fragment";
 
     @Bind(R.id.map_frame)
     FrameLayout mapFrame;
-
     @Bind(R.id.centerLayout)
     RelativeLayout centerLayout;
     @Bind(R.id.treasureView)
     TreasureView treasureView;
     @Bind(R.id.layout_bottom)
     FrameLayout layoutBottom;
+
     @Bind(R.id.hide_treasure)
     RelativeLayout hide_treasure;
+
+    @Bind(R.id.iv_located)
+    ImageView iv_located;
+
+    /**
+     * 在埋藏宝藏时，下方卡片上显示的埋藏位置
+     */
+    @Bind(R.id.tv_currentLocation)
+    TextView tvCurrentLication;
 
     private ActivityUtils activityUtils;
 
@@ -70,25 +90,82 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
     }
 
     @Override
-    public MapPresenter createPresenter() {
-        return new MapPresenter();
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
         initBaiduMap();
         initLocation();
+        initGeoCoder();
 
     }
 
+    @Override
+    public MapPresenter createPresenter() {
+        return new MapPresenter();
+    }
+
+    private String address;
+
+    private GeoCoder geoCoder;
+
+    /**
+     * 地理编码：将屏幕中间的定位点所定的位置，获取当前位置
+     */
+    private void initGeoCoder() {
+
+        geoCoder = GeoCoder.newInstance();
+
+        geoCoder.setOnGetGeoCodeResultListener(onGetGeoCoderResultListener);
+
+    }
+
+
+    private OnGetGeoCoderResultListener onGetGeoCoderResultListener = new OnGetGeoCoderResultListener() {
+
+        /**
+         * 地理编码查询结果回调函数
+         * // 地理编码 (地址 -> 经纬度)
+         * @param geoCodeResult
+         */
+        @Override
+        public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+//            String address = geoCodeResult.getAddress();
+//            LatLng location = geoCodeResult.getLocation();
+//
+//            Log.e(TAG, "onGetGeoCodeResult: " + address);
+//            Log.e(TAG, "onGetGeoCodeResult: " + location);
+
+        }
+
+        /**
+         * 反地理编码查询结果回调函数
+         * // 反地理编码 (经纬度 -> 地址)
+         * @param reverseGeoCodeResult
+         */
+        @Override
+        public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+            if (reverseGeoCodeResult == null) return;
+            if (reverseGeoCodeResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                address = "未知";
+            }
+            address = reverseGeoCodeResult.getAddress();
+            tvCurrentLication.setText("当前位置：" + address);
+        }
+    };
 
     public static final int UI_MODE_NORMAL = 0;// 普通
     public static final int UI_MODE_SELECT = 1;// 选中
     public static final int UI_MODE_HIDE = 2; // 埋藏
 
+    private int uiMode = UI_MODE_NORMAL;
+
+    /**
+     * 修改显示模式
+     *
+     * @param mode
+     */
     public void changeMode(int mode) {
 
         hideAll();
@@ -101,15 +178,17 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         switch (mode) {
 
             case UI_MODE_NORMAL:
-
+                uiMode = UI_MODE_NORMAL;
                 break;
 
             case UI_MODE_SELECT:
+                uiMode = UI_MODE_SELECT;
                 layoutBottom.setVisibility(View.VISIBLE);
                 treasureView.setVisibility(View.VISIBLE);
                 break;
 
             case UI_MODE_HIDE:
+                uiMode = UI_MODE_HIDE;
                 layoutBottom.setVisibility(View.VISIBLE);
                 hide_treasure.setVisibility(View.VISIBLE);
                 centerLayout.setVisibility(View.VISIBLE);
@@ -118,22 +197,6 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         }
 
     }
-
-    /*
-                bottomLayout.setVisibility(View.GONE);// 隐藏下方的宝藏信息layout
-                // 按下藏宝时
-                btnHideHere.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View v) {
-                        bottomLayout.setVisibility(View.VISIBLE);// 显示下方的宝藏信息layout
-                        hideTreasure.setVisibility(View.VISIBLE);// 显示宝藏录入信息卡片
-                        treasureView.setVisibility(View.GONE);// 隐藏宝藏信息卡片
-                    }
-                });
-                break;
-        }
-    }
-
-    */
 
     private void hideAll() {
         centerLayout.setVisibility(View.GONE);
@@ -164,20 +227,11 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     }
 
-
     private static LatLng myLocation;
-
 
     private BDLocationListener bdLocationListener = new BDLocationListener() {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
-
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getCity());
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getBuildingName());
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getCountry());
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getLocType());
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getStreet());
-            Log.i(TAG, "onReceiveLocation: " + bdLocation.getLatitude() + " " + bdLocation.getLongitude());
 
             myLocation = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
 
@@ -267,6 +321,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         baiduMap = mapView.getMap();
 
         baiduMap.setOnMarkerClickListener(onMarkerClickListener);
+        baiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
 
     }
 
@@ -297,8 +352,6 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         activityUtils.showToast(msg);
     }
 
-    private static final String TAG = "Map1Fragment";
-
     @Override
     public void setData(List<Treasure> data) {
 
@@ -315,7 +368,6 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     private void addOverMark(LatLng latLng, final int treasureId) {
 
-
         MarkerOptions options = new MarkerOptions();
 
         options.position(latLng);
@@ -330,6 +382,48 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     }
 
+    private BaiduMap.OnMapStatusChangeListener onMapStatusChangeListener = new BaiduMap.OnMapStatusChangeListener() {
+        @Override
+        public void onMapStatusChangeStart(MapStatus mapStatus) {
+
+        }
+
+        @Override
+        public void onMapStatusChange(MapStatus mapStatus) {
+
+        }
+
+        @Override
+        public void onMapStatusChangeFinish(MapStatus mapStatus) {
+            Log.i(TAG, "onMapStatusChangeFinish: ");
+            if (uiMode == UI_MODE_HIDE) {
+                // 反弹动画
+//                YoYo.with(Techniques.Bounce).duration(1000).playOn(hide_treasure);
+                YoYo.with(Techniques.Bounce).duration(1000).playOn(iv_located);
+                // 淡入动画
+//                YoYo.with(Techniques.FadeIn).duration(1000).playOn(hide_treasure);
+
+                LatLng target = mapStatus.target;
+
+//                if (currentMarker.getPosition() != target) {
+
+                    if (uiMode == UI_MODE_HIDE) {
+
+                        ReverseGeoCodeOption option = new ReverseGeoCodeOption();
+                        option.location(target);
+
+                        geoCoder.reverseGeoCode(option);
+
+                    }
+
+//                }
+
+            }
+
+        }
+    };
+
+
     private Marker currentMarker;
     private BaiduMap.OnMarkerClickListener onMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
@@ -340,6 +434,8 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
             }
 
             currentMarker = marker;
+
+            Log.e(TAG, "onMarkerClick: " + marker.getTitle());
 
             marker.setVisible(false);
             marker.setIcon(expanded);
