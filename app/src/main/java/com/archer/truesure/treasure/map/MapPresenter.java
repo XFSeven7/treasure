@@ -1,11 +1,10 @@
 package com.archer.truesure.treasure.map;
 
-import android.util.Log;
-
 import com.archer.truesure.net.NetOkHttpClient;
 import com.archer.truesure.treasure.Area;
 import com.archer.truesure.treasure.Treasure;
 import com.archer.truesure.treasure.TreasureApi;
+import com.archer.truesure.treasure.TreasureRepo;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 import java.util.List;
@@ -22,7 +21,15 @@ public class MapPresenter extends MvpNullObjectBasePresenter<MapMvpView> {
 
     private Call<List<Treasure>> treasureInArea;
 
+    private Area area;
+
     public void getTreasure(Area area){
+
+        if (TreasureRepo.getInstance().isCached(area)) {
+            return;
+        }
+
+        this.area = area;
 
         TreasureApi treasureApi = NetOkHttpClient.getInstance().getTreasureApi();
 
@@ -38,10 +45,11 @@ public class MapPresenter extends MvpNullObjectBasePresenter<MapMvpView> {
     }
 
     private static final String TAG = "MapPresenter";
+
     private Callback<List<Treasure>> callBack = new Callback<List<Treasure>>() {
         @Override
         public void onResponse(Call<List<Treasure>> call, Response<List<Treasure>> response) {
-            Log.i(TAG, "onResponse: ");
+
             if (response != null && response.isSuccessful()) {
 
                 List<Treasure> body = response.body();
@@ -51,8 +59,11 @@ public class MapPresenter extends MvpNullObjectBasePresenter<MapMvpView> {
                     return;
                 }
 
+                // 缓存宝藏及区域
+                TreasureRepo.getInstance().addTreasure(body);
+                TreasureRepo.getInstance().cache(area);
+
                 getView().setData(body);
-                Log.i(TAG, "onResponse: 1" + body.get(0).getTitle());
                 return;
 
             }

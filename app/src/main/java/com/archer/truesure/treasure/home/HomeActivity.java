@@ -2,6 +2,7 @@ package com.archer.truesure.treasure.home;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
+import com.archer.truesure.treasure.map.Map1Fragment;
 import com.archer.truesure.user.UserPres;
 import com.archer.truesure.user.account.AccountActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,6 +30,9 @@ public class HomeActivity extends AppCompatActivity {
     NavigationView navView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    private FragmentManager fragmentManager;
+    private Map1Fragment map1Fragment;
 
     private ActivityUtils activityUtils;
     private ImageView icon;
@@ -76,6 +81,8 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        fragmentManager = getSupportFragmentManager();
+        map1Fragment = (Map1Fragment) fragmentManager.findFragmentById(R.id.fragment_map);
 
     }
 
@@ -86,7 +93,8 @@ public class HomeActivity extends AppCompatActivity {
             switch (item.getItemId()) {
 
                 case R.id.menu_item_hide:
-                    activityUtils.showToast("埋藏宝藏");
+                    map1Fragment.changeMode(Map1Fragment.UI_MODE_HIDE);
+                    drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.menu_item_my_list:
                     activityUtils.showToast("我的列表");

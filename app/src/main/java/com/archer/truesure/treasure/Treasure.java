@@ -1,5 +1,8 @@
 package com.archer.truesure.treasure;
 
+import com.archer.truesure.treasure.map.Map1Fragment;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -91,4 +94,16 @@ public class Treasure {
     public int getSize() {
         return size;
     }
+
+    public double distanceToMyLocation(){
+        // 我的当前位置
+        LatLng myLocation = Map1Fragment.getMyLocation();
+        if(myLocation == null){
+            return 0.00d;
+        }
+        // 当前宝藏的位置
+        LatLng target = new LatLng(latitude, longitude);
+        return DistanceUtil.getDistance(target, myLocation);
+    };
+
 }

@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
+import com.archer.truesure.components.TreasureView;
 import com.archer.truesure.treasure.Area;
 import com.archer.truesure.treasure.Treasure;
+import com.archer.truesure.treasure.TreasureRepo;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -19,6 +22,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -44,6 +48,15 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     @Bind(R.id.map_frame)
     FrameLayout mapFrame;
+
+    @Bind(R.id.centerLayout)
+    RelativeLayout centerLayout;
+    @Bind(R.id.treasureView)
+    TreasureView treasureView;
+    @Bind(R.id.layout_bottom)
+    FrameLayout layoutBottom;
+    @Bind(R.id.hide_treasure)
+    RelativeLayout hide_treasure;
 
     private ActivityUtils activityUtils;
 
@@ -71,6 +84,64 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     }
 
+
+    public static final int UI_MODE_NORMAL = 0;// 普通
+    public static final int UI_MODE_SELECT = 1;// 选中
+    public static final int UI_MODE_HIDE = 2; // 埋藏
+
+    public void changeMode(int mode) {
+
+        hideAll();
+
+//        centerLayout  藏宝
+//        treasureView  查看宝藏
+//        layoutBottom
+//        hide_treasure 藏宝标题设置
+
+        switch (mode) {
+
+            case UI_MODE_NORMAL:
+
+                break;
+
+            case UI_MODE_SELECT:
+                layoutBottom.setVisibility(View.VISIBLE);
+                treasureView.setVisibility(View.VISIBLE);
+                break;
+
+            case UI_MODE_HIDE:
+                layoutBottom.setVisibility(View.VISIBLE);
+                hide_treasure.setVisibility(View.VISIBLE);
+                centerLayout.setVisibility(View.VISIBLE);
+                break;
+
+        }
+
+    }
+
+    /*
+                bottomLayout.setVisibility(View.GONE);// 隐藏下方的宝藏信息layout
+                // 按下藏宝时
+                btnHideHere.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        bottomLayout.setVisibility(View.VISIBLE);// 显示下方的宝藏信息layout
+                        hideTreasure.setVisibility(View.VISIBLE);// 显示宝藏录入信息卡片
+                        treasureView.setVisibility(View.GONE);// 隐藏宝藏信息卡片
+                    }
+                });
+                break;
+        }
+    }
+
+    */
+
+    private void hideAll() {
+        centerLayout.setVisibility(View.GONE);
+        treasureView.setVisibility(View.GONE);
+        layoutBottom.setVisibility(View.GONE);
+        hide_treasure.setVisibility(View.GONE);
+    }
+
     /**
      * 定位
      */
@@ -78,7 +149,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
         LocationClientOption locationClientOption = new LocationClientOption();
         //设置每隔多少秒扫描一次
-        locationClientOption.setScanSpan(60000);
+//        locationClientOption.setScanSpan(60000);
         //设置坐标模式
         locationClientOption.setCoorType("bd09ll");
         //打开GPS
@@ -89,14 +160,13 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         client.registerLocationListener(bdLocationListener);
 
         client.start();
-        client.requestLocation();
+//        client.requestLocation();
 
     }
 
 
-    private static final String TAG = "Map1Fragment";
+    private static LatLng myLocation;
 
-    private LatLng latLng;
 
     private BDLocationListener bdLocationListener = new BDLocationListener() {
         @Override
@@ -109,10 +179,10 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
             Log.i(TAG, "onReceiveLocation: " + bdLocation.getStreet());
             Log.i(TAG, "onReceiveLocation: " + bdLocation.getLatitude() + " " + bdLocation.getLongitude());
 
-            latLng = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+            myLocation = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
 
             MyLocationData data = new MyLocationData.Builder()
-                    .accuracy(50f)
+                    .accuracy(100f)
                     .latitude(bdLocation.getLatitude())
                     .longitude(bdLocation.getLongitude())
                     .build();
@@ -122,7 +192,6 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
             updateMapArea();
 
             animMoveToMyLocation();
-
 
 
         }
@@ -153,8 +222,8 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
     public void animMoveToMyLocation() {
 
         MapStatus status = new MapStatus.Builder()
-                .target(latLng)
-                .zoom(19)
+                .target(myLocation)
+                .zoom(18)
                 .build();
 
         MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(status);
@@ -166,6 +235,15 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
     }
 
     private BaiduMap baiduMap;
+
+    /**
+     * 按下宝藏信息展示卡片将进入宝藏详情页
+     */
+    @OnClick(R.id.treasureView)
+    public void clickTreasureView() {
+        activityUtils.hideSoftKeyboard();
+        activityUtils.showToast("gogogo");
+    }
 
     /**
      * 初始化地图
@@ -219,12 +297,15 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         activityUtils.showToast(msg);
     }
 
+    private static final String TAG = "Map1Fragment";
+
     @Override
     public void setData(List<Treasure> data) {
 
         for (Treasure treasure : data) {
             LatLng latLng = new LatLng(treasure.getLatitude(), treasure.getLongitude());
-            addOverMark(latLng);
+            addOverMark(latLng, treasure.getId());
+            Log.e(TAG, "setData: " + treasure.getTitle());
         }
 
     }
@@ -232,25 +313,67 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
     private BitmapDescriptor dot = BitmapDescriptorFactory.fromResource(R.drawable.treasure_dot);
     private BitmapDescriptor expanded = BitmapDescriptorFactory.fromResource(R.drawable.treasure_expanded);
 
-    private void addOverMark(LatLng latLng) {
+    private void addOverMark(LatLng latLng, final int treasureId) {
 
 
         MarkerOptions options = new MarkerOptions();
 
-        options.anchor(0.5f, 0.5f);
         options.position(latLng);
         options.icon(dot);
+        options.anchor(0.5f, 0.5f);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", treasureId);
+        options.extraInfo(bundle);
 
         baiduMap.addOverlay(options);
 
     }
 
+    private Marker currentMarker;
     private BaiduMap.OnMarkerClickListener onMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
+
+            if (currentMarker != null) {
+                currentMarker.setVisible(true);
+            }
+
+            currentMarker = marker;
+
+            marker.setVisible(false);
+            marker.setIcon(expanded);
+
+            InfoWindow infoWindow = new InfoWindow(expanded, marker.getPosition(), 0, onInfoWindowClickListener);
+
+            baiduMap.showInfoWindow(infoWindow);
+
+            // 从当前Marker中取出这个宝藏的id号(@see addMarker时的操作)
+            int id = marker.getExtraInfo().getInt("id");
+            // 从宝藏仓库中，根据id号取出宝藏
+            Treasure treasure = TreasureRepo.getInstance().getTreasure(id);
+            treasureView.bindTreasure(treasure);
+
+            changeMode(UI_MODE_SELECT);
+
             return false;
+
         }
 
     };
 
+    private InfoWindow.OnInfoWindowClickListener onInfoWindowClickListener = new InfoWindow.OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick() {
+            currentMarker.setIcon(dot);
+            baiduMap.hideInfoWindow();
+            currentMarker.setVisible(true);
+            changeMode(UI_MODE_NORMAL);
+        }
+    };
+
+
+    public static LatLng getMyLocation() {
+        return myLocation;
+    }
 }

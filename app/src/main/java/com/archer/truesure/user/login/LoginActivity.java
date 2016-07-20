@@ -52,13 +52,10 @@ public class LoginActivity extends MvpActivity<LoginView, LoginPresenter> implem
         setContentView(R.layout.activity_login);
     }
 
-    private static final String TAG = "LoginActivity";
-
     @Override
     public void onContentChanged() {
         super.onContentChanged();
         ButterKnife.bind(this);
-        Log.e(TAG, "onContentChanged: ");
 
         setSupportActionBar(toolbar);
 
@@ -101,7 +98,6 @@ public class LoginActivity extends MvpActivity<LoginView, LoginPresenter> implem
         @Override
         public void afterTextChanged(Editable s) {
 
-            Log.e(TAG, "afterTextChanged: ");
             et_password = etPassword.getText().toString();
             et_username = etUsername.getText().toString();
 
