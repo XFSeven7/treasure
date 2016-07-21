@@ -1,5 +1,7 @@
 package com.archer.truesure.treasure;
 
+import com.archer.truesure.treasure.detail.Detail;
+import com.archer.truesure.treasure.detail.DetailResult;
 import com.archer.truesure.treasure.hide.HideTreasure;
 import com.archer.truesure.treasure.hide.HideTreasureResult;
 
@@ -20,5 +22,8 @@ public interface TreasureApi {
 
     @POST("/Handler/TreasureHandler.ashx?action=hide")
     Call<HideTreasureResult> hideTreasure(@Body HideTreasure hideTreasure);
+
+    @POST("/Handler/TreasureHandler.ashx?action=tdetails")
+    Call<List<DetailResult>> getTreasure(@Body Detail detail);
 
 }

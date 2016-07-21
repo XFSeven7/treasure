@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.archer.truesure.R;
+import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.components.TreasureView;
 import com.archer.truesure.treasure.Treasure;
 import com.baidu.mapapi.map.BaiduMap;
@@ -21,11 +21,14 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.hannesdorfmann.mosby.mvp.MvpActivity;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends MvpActivity<DetailView,DetailPresenter> implements DetailView {
 
     private static final String KEY_TREASURE = "key_treasure";
     @Bind(R.id.toolbar)
@@ -47,10 +50,12 @@ public class DetailActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
+    private ActivityUtils activityUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activityUtils = new ActivityUtils(this);
         setContentView(R.layout.activity_treasure_detail);
         ButterKnife.bind(this);
 
@@ -67,6 +72,14 @@ public class DetailActivity extends AppCompatActivity {
 
         initMap();
 
+        getPresenter().detail(new Detail(treasure.getId()));
+
+    }
+
+    @NonNull
+    @Override
+    public DetailPresenter createPresenter() {
+        return new DetailPresenter();
     }
 
     private void initMap() {
@@ -111,5 +124,23 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        activityUtils.showToast(msg);
+    }
+
+    @Override
+    public void setData(List<DetailResult> data) {
+
+        if (data.size() >= 1) {
+            DetailResult detailResult = data.get(0);
+            tvDetailDescription.setText(detailResult.description);
+            return;
+        }
+
+        activityUtils.showToast("没有记录");
+
     }
 }
