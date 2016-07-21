@@ -507,6 +507,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         public boolean onMarkerClick(Marker marker) {
 
             if (currentMarker != null) {
+                currentMarker.setIcon(dot);
                 currentMarker.setVisible(true);
             }
 
@@ -514,8 +515,8 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
             Log.e(TAG, "onMarkerClick: " + marker.getTitle());
 
-            marker.setVisible(false);
-            marker.setIcon(expanded);
+            currentMarker.setVisible(false);
+            currentMarker.setIcon(expanded);
 
             InfoWindow infoWindow = new InfoWindow(expanded, marker.getPosition(), 0, onInfoWindowClickListener);
 

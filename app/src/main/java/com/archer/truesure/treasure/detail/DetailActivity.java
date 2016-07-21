@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -88,7 +89,6 @@ public class DetailActivity extends AppCompatActivity {
 
         options.mapStatus(mapStatus);
 
-
         MapView mapView = new MapView(this, options);
 
         frameLayout.addView(mapView);
@@ -101,5 +101,15 @@ public class DetailActivity extends AppCompatActivity {
 
         baiduMap.addOverlay(options1);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
