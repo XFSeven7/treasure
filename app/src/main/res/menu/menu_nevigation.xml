@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/nevigation_walk"
+        android:title="步行导航"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/nevigation_bike"
+        android:title="骑行导航"
+        app:showAsAction="never" />
+</menu>

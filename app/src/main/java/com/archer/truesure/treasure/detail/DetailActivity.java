@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
 import com.archer.truesure.components.TreasureView;
 import com.archer.truesure.treasure.Treasure;
+import com.archer.truesure.treasure.map.Map1Fragment;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -21,6 +23,8 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import java.util.List;
@@ -28,9 +32,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends MvpActivity<DetailView,DetailPresenter> implements DetailView {
+public class DetailActivity extends MvpActivity<DetailView, DetailPresenter> implements DetailView {
 
     private static final String KEY_TREASURE = "key_treasure";
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.frameLayout)
@@ -82,6 +87,14 @@ public class DetailActivity extends MvpActivity<DetailView,DetailPresenter> impl
         return new DetailPresenter();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_nevigation, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private LatLng latLng;
+
     private void initMap() {
 
         BaiduMapOptions options = new BaiduMapOptions();
@@ -92,7 +105,8 @@ public class DetailActivity extends MvpActivity<DetailView,DetailPresenter> impl
         options.zoomGesturesEnabled(false);//
         options.zoomControlsEnabled(false);//
 
-        LatLng latLng = new LatLng(treasure.getLatitude(), treasure.getLongitude());
+        //目的地
+        latLng = new LatLng(treasure.getLatitude(), treasure.getLongitude());
 
         MapStatus mapStatus = new MapStatus.Builder()
                 .zoom(18)
@@ -119,8 +133,36 @@ public class DetailActivity extends MvpActivity<DetailView,DetailPresenter> impl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        String street = Map1Fragment.getStreet();
+        String location = treasure.getLocation();
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                break;
+
+            case R.id.nevigation_walk:
+
+                NaviParaOption para1 = new NaviParaOption()
+                        .startPoint(Map1Fragment.getMyLocation()).endPoint(latLng)
+                        .startName(street).endName(location);
+
+                BaiduMapNavigation.openBaiduMapWalkNavi(para1, this);
+
+
+                break;
+
+            case R.id.nevigation_bike:
+
+                NaviParaOption para2 = new NaviParaOption()
+                        .startPoint(Map1Fragment.getMyLocation()).endPoint(latLng)
+                        .startName("A").endName("B");
+
+                BaiduMapNavigation.openBaiduMapBikeNavi(para2, this);
+
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);

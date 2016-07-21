@@ -375,6 +375,10 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         return myLocation;
     }
 
+    public static String getStreet() {
+        return myStreet;
+    }
+
     //****************************以下为实现MapMvpView接口的方法*************************************
 
     @Override
@@ -430,6 +434,8 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         }
     };
 
+
+    private static String myStreet;
     /**
      * 地图位置的监听事件
      * 获取当前位置
@@ -447,6 +453,8 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
                     .build();
 
             baiduMap.setMyLocationData(data);
+
+            myStreet = bdLocation.getAddrStr();
 
             animMoveToMyLocation();
 
