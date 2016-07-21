@@ -112,16 +112,29 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    public void onBackPressed() {
-
+    @Override public void onBackPressed() {
+        // DrawerLayout是开的
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-            return;
         }
-
-        super.onBackPressed();
+        // DrawerLayout是关的
+        else{
+            if (map1Fragment.clickBackPressed()) {
+                super.onBackPressed();
+            }
+        }
     }
+
+//    @Override
+//    public void onBackPressed() {
+//
+//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//            drawerLayout.closeDrawer(GravityCompat.START);
+//            return;
+//        }
+//
+//        super.onBackPressed();
+//    }
 
     @Override
     protected void onResume() {

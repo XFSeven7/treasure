@@ -25,6 +25,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
@@ -142,12 +143,12 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
                 .build();
 
         MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(status);
-        baiduMap.setMyLocationEnabled(true);
+
         baiduMap.animateMapStatus(update);
 
     }
 
-    @OnClick({R.id.iv_toTreasureInfo,R.id.btn_HideHere})
+    @OnClick({R.id.iv_toTreasureInfo, R.id.btn_HideHere})
     public void hideTreasure() {
         activityUtils.hideSoftKeyboard();
         String string = et_treasureTitle.getText().toString();
@@ -184,6 +185,19 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         }
     }
 
+    // 地图缩放操作
+    @OnClick({R.id.iv_scaleDown, R.id.iv_scaleUp})
+    public void scaleMap(View view) {
+        switch (view.getId()) {
+            case R.id.iv_scaleUp:
+                baiduMap.setMapStatus(MapStatusUpdateFactory.zoomIn());
+                break;
+            case R.id.iv_scaleDown:
+                baiduMap.setMapStatus(MapStatusUpdateFactory.zoomOut());
+                break;
+        }
+    }
+
     //****************************以下为该类的自定义方法*************************************
 
     /**
@@ -193,7 +207,24 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
      */
     private void initBaiduMap() {
 
-        MapView mapView = new MapView(getActivity());
+        // 状态
+        MapStatus mapStatus = new MapStatus.Builder()
+                .zoom(15)//3~21
+                .overlook(0) // (0) - (-45)
+                .build();
+        // 设置
+        BaiduMapOptions options = new BaiduMapOptions()
+                .mapStatus(mapStatus) // 地图相关状态
+                .compassEnabled(true) // 指南针
+                .zoomGesturesEnabled(true) // 设置是否允许缩放手势
+                .rotateGesturesEnabled(true) // 设置是否允许旋转手势，默认允许
+                .scrollGesturesEnabled(true) // 设置是否允许拖拽手势，默认允许
+                .scaleControlEnabled(false) // 设置是否显示比例尺控件
+                .overlookingGesturesEnabled(false) // 设置是否允许俯视手势，默认允许
+                .zoomControlsEnabled(false) // 设置是否显示缩放控件
+                ;
+
+        MapView mapView = new MapView(getActivity(), options);
 
         mapFrame.addView(mapView, 0);
         baiduMap = mapView.getMap();
@@ -210,6 +241,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
      */
     private void initLocation() {
 
+        baiduMap.setMyLocationEnabled(true);
         LocationClientOption locationClientOption = new LocationClientOption();
         //设置每隔多少秒扫描一次
 //        locationClientOption.setScanSpan(60000);
@@ -223,7 +255,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
         client.registerLocationListener(bdLocationListener);
 
         client.start();
-//        client.requestLocation();
+        client.requestLocation();
 
     }
 
@@ -322,6 +354,17 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
     }
 
+    /**
+     * 按下back时来调用
+     */
+    public boolean clickBackPressed() {
+        if (this.uiMode != UI_MODE_NORMAL) {
+            changeMode(UI_MODE_NORMAL);
+            return false;
+        }
+        // 当前为普通浏览模式的话，返回true，表明当前fragment不要做其他操作,你可以退出
+        return true;
+    }
 
     public static LatLng getMyLocation() {
         return myLocation;
@@ -400,8 +443,6 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
             baiduMap.setMyLocationData(data);
 
-            updateMapArea();
-
             animMoveToMyLocation();
 
         }
@@ -423,6 +464,7 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
 
         @Override
         public void onMapStatusChangeFinish(MapStatus mapStatus) {
+            updateMapArea();
             Log.i(TAG, "onMapStatusChangeFinish: ");
             if (uiMode == UI_MODE_HIDE) {
                 // 反弹动画
