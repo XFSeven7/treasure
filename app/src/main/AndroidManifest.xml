@@ -40,14 +40,15 @@
         <activity android:name=".user.register.RegisterActivity" />
         <activity android:name=".treasure.home.HomeActivity" />
         <activity android:name=".user.account.AccountActivity" />
-        <activity android:name=".temp.TempActivity"></activity>
+        <activity android:name=".temp.TempActivity" />
 
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
 
-        <activity android:name=".treasure.hide.HideActivity"></activity>
+        <activity android:name=".treasure.hide.HideActivity" />
+        <activity android:name=".treasure.detail.DetailActivity"></activity>
     </application>
 
 </manifest>

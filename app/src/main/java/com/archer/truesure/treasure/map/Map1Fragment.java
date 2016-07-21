@@ -19,6 +19,7 @@ import com.archer.truesure.components.TreasureView;
 import com.archer.truesure.treasure.Area;
 import com.archer.truesure.treasure.Treasure;
 import com.archer.truesure.treasure.TreasureRepo;
+import com.archer.truesure.treasure.detail.DetailActivity;
 import com.archer.truesure.treasure.hide.HideActivity;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -166,7 +167,11 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
      */
     @OnClick(R.id.treasureView)
     public void clickTreasureView() {
-        activityUtils.showToast("Asdasd");
+
+        int id = currentMarker.getExtraInfo().getInt("id");
+        Treasure treasure = TreasureRepo.getInstance().getTreasure(id);
+
+        DetailActivity.open(getActivity(), treasure);
     }
 
     @OnClick({R.id.tv_satellite, R.id.tv_compass})
@@ -542,6 +547,34 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
             changeMode(UI_MODE_NORMAL);
         }
     };
+/*
+    warning: push.default is unset; its implicit value has changed in
+    Git 2.0 from 'matching' to 'simple'. To squelch this message
+    and maintain the traditional behavior, use:
+
+    git config --global push.default matching
+
+    To squelch this message and adopt the new behavior now, use:
+
+    git config --global push.default simple
+
+    When push.default is set to 'matching', git will push local branches
+    to the remote branches that already exist with the same name.
+
+    Since Git 2.0, Git defaults to the more conservative 'simple'
+    behavior, which only pushes the current branch to the corresponding
+    remote branch that 'git pull' uses to update the current branch.
+
+    See 'git help config' and search for 'push.default' for further information.
+            (the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+    'current' instead of 'simple' if you sometimes use older versions of Git)
+
+    fatal: You are not currently on a branch.
+    To push the history leading to the current (detached HEAD)
+    state now, use
+
+    git push origin HEAD:<name-of-remote-branch>
 
 
+*/
 }
