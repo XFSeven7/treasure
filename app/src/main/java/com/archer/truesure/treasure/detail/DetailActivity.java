@@ -1,9 +1,11 @@
 package com.archer.truesure.treasure.detail;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +27,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviParaOption;
+import com.baidu.mapapi.utils.OpenClientUtil;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import java.util.List;
@@ -143,23 +146,11 @@ public class DetailActivity extends MvpActivity<DetailView, DetailPresenter> imp
                 break;
 
             case R.id.nevigation_walk:
-
-                NaviParaOption para1 = new NaviParaOption()
-                        .startPoint(Map1Fragment.getMyLocation()).endPoint(latLng)
-                        .startName(street).endName(location);
-
-                BaiduMapNavigation.openBaiduMapWalkNavi(para1, this);
-
+                startWalkingNavi(Map1Fragment.getMyLocation(), street, latLng, location);
                 break;
 
             case R.id.nevigation_bike:
-
-                NaviParaOption para2 = new NaviParaOption()
-                        .startPoint(Map1Fragment.getMyLocation()).endPoint(latLng)
-                        .startName("A").endName("B");
-
-                BaiduMapNavigation.openBaiduMapBikeNavi(para2, this);
-
+                startBikingNavi(Map1Fragment.getMyLocation(), street, latLng, location);
                 break;
 
         }
@@ -181,7 +172,62 @@ public class DetailActivity extends MvpActivity<DetailView, DetailPresenter> imp
             return;
         }
 
-        activityUtils.showToast("没有记录");
+//        activityUtils.showToast("没有记录");
 
     }
+
+    // -----------------------------
+
+    /**
+     * 启动百度地图步行导航(Native)
+     */
+    public void startWalkingNavi(LatLng startPt, String startAdr, LatLng endPt, String endAdr) {
+        // 构建 导航参数
+        NaviParaOption para = new NaviParaOption()
+                .startPoint(startPt).endPoint(endPt)
+                .startName(startAdr).endName(endAdr);
+
+        if (!BaiduMapNavigation.openBaiduMapWalkNavi(para, this)) {
+            showDialog();
+        }
+
+    }
+
+    /**
+     * 启动百度地图骑行导航(Native)
+     */
+    public void startBikingNavi(LatLng startPt, String startAdr, LatLng endPt, String endAdr) {
+        // 构建 导航参数
+        NaviParaOption para = new NaviParaOption()
+                .startPoint(startPt).endPoint(endPt)
+                .startName(startAdr).endName(endAdr);
+
+        if (!BaiduMapNavigation.openBaiduMapBikeNavi(para, this)) {
+            showDialog();
+        }
+    }
+
+    /**
+     * 提示未安装百度地图app或app版本过低
+     */
+    public void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("您尚未安装百度地图app或app版本过低，点击确认安装？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                OpenClientUtil.getLatestBaiduMapApp(DetailActivity.this);
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
 }
