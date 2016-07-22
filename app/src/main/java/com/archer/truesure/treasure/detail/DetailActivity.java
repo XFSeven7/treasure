@@ -150,7 +150,6 @@ public class DetailActivity extends MvpActivity<DetailView, DetailPresenter> imp
 
                 BaiduMapNavigation.openBaiduMapWalkNavi(para1, this);
 
-
                 break;
 
             case R.id.nevigation_bike:

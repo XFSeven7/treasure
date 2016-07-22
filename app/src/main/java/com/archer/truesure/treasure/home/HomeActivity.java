@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.archer.truesure.R;
 import com.archer.truesure.common.ActivityUtils;
+import com.archer.truesure.treasure.list.ListFragment;
 import com.archer.truesure.treasure.map.Map1Fragment;
 import com.archer.truesure.user.UserPres;
 import com.archer.truesure.user.account.AccountActivity;
@@ -33,6 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private Map1Fragment map1Fragment;
+    private ListFragment listFragment;
 
     private ActivityUtils activityUtils;
     private ImageView icon;
@@ -97,7 +99,11 @@ public class HomeActivity extends AppCompatActivity {
                     drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.menu_item_my_list:
-                    activityUtils.showToast("我的列表");
+                    if (listFragment == null) {
+                        listFragment = new ListFragment();
+                    }
+                    fragmentManager.beginTransaction().add(R.id.fragment_container, listFragment).addToBackStack("A").commit();
+                    drawerLayout.closeDrawer(GravityCompat.START);
                     break;
                 case R.id.menu_item_help:
                     activityUtils.showToast("帮助");

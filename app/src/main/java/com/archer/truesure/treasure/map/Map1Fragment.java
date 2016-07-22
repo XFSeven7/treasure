@@ -107,6 +107,12 @@ public class Map1Fragment extends MvpFragment<MapMvpView, MapPresenter> implemen
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        updateMapArea();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
